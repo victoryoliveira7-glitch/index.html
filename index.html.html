@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>🎲 Quiz EELM – Escola de Enfermagem Luiza de Marillac</title>
+
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- Metadados para visual bonito ao compartilhar -->
+  <meta name="description" content="Jogue o Quiz da Escola de Enfermagem Luiza de Marillac (EELM) e teste seus conhecimentos!">
+  <meta property="og:title" content="🎲 Quiz EELM – Escola de Enfermagem Luiza de Marillac">
+  <meta property="og:description" content="Teste seus conhecimentos com 6 perguntas rápidas e compartilhe seu resultado.">
+  <meta property="og:type" content="website">
+  <meta name="theme-color" content="#10b981">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 64 64%27%3E%3Ccircle cx=%2732%27 cy=%2732%27 r=%2732%27 fill=%27%2310b981%27/%3E%3Cpath d=%27M20 18v10a8 8 0 1 0 16 0V18%27 stroke=%27%23fff%27 stroke-width=%274%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3Cpath d=%27M36 22h8%27 stroke=%27%23fff%27 stroke-width=%274%27 stroke-linecap=%27round%27/%3E%3Cpath d=%27M44 22v16a8 8 0 0 1-8 8h-2a6 6 0 0 1-6-6v-2%27 stroke=%27%23fff%27 stroke-width=%274%27 fill=%27none%27 stroke-linecap=%27round%27/%3E%3Ccircle cx=%2716%27 cy=%2736%27 r=%274%27 fill=%27%23fff%27/%3E%3C/svg%3E" />
+
+  <style>
+    @keyframes pop { 0%{transform:scale(.95);opacity:.6}60%{transform:scale(1.03);opacity:1}100%{transform:scale(1)} }
+    @keyframes float { 0%{transform:translateY(0) rotate(0);opacity:1}100%{transform:translateY(-140vh) rotate(360deg);opacity:0} }
+    .confetti > span { position:absolute; bottom:-10vh; width:10px; height:14px; opacity:.9; animation:float linear forwards; border-radius:2px; }
+    /* Acessibilidade de foco geral */
+    :focus-visible { outline: 2px solid #34d399; outline-offset: 2px; }
+  </style>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-emerald-900 via-teal-900 to-green-900 text-white flex items-center justify-center p-4">
+  <main class="w-full max-w-3xl">
+    <section class="bg-emerald-900/20 backdrop-blur-xl rounded-2xl shadow-2xl border border-emerald-300/20 overflow-hidden">
+      <!-- Header -->
+      <header class="p-6 sm:p-8 bg-gradient-to-r from-emerald-600/30 to-teal-600/30">
+        <div class="flex items-center gap-3">
+          <!-- Ícone fofinho de enfermagem (estetoscópio) -->
+          <svg width="34" height="34" viewBox="0 0 24 24" fill="none" class="text-emerald-300" aria-hidden="true">
+            <title>Estetoscópio</title>
+            <path d="M6 3v5a4 4 0 1 0 8 0V3" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M14 6h4" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <path d="M18 6v8a4 4 0 0 1-4 4h-1a3 3 0 0 1-3-3v-1" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="5" cy="14" r="2" stroke="currentColor" stroke-width="2"/>
+          </svg>
+          <h1 class="text-2xl sm:text-3xl font-extrabold tracking-tight">
+            Quiz – Escola de Enfermagem Luiza de Marillac (EELM)
+          </h1>
+        </div>
+        <p class="mt-2 text-white/80 text-sm sm:text-base">Teste seus conhecimentos sobre a história da EELM/FELM.</p>
+
+        <!-- Progresso -->
+        <div class="mt-6">
+          <div class="flex items-center justify-between text-xs sm:text-sm text-white/80">
+            <span id="progressLabel">Pergunta 1 de 6</span>
+            <span id="scoreLabel">Pontuação: 0</span>
+          </div>
+          <div class="w-full h-2 bg-white/10 rounded-full mt-2 overflow-hidden" aria-hidden="true">
+            <div id="progressBar" class="h-full bg-gradient-to-r from-emerald-400 to-teal-400 rounded-full transition-all duration-500" style="width: 0%"></div>
+          </div>
+        </div>
+      </header>
+
+      <!-- Corpo do Quiz -->
+      <div class="p-6 sm:p-8 space-y-6 sm:space-y-8">
+        <div class="space-y-3">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-200 text-xs font-medium border border-emerald-400/30">
+            <span>História EELM</span>
+          </div>
+          <h2 id="questionText" class="text-xl sm:text-2xl font-bold leading-snug">Pergunta aqui</h2>
+        </div>
+
+        <div id="optionsContainer" class="grid gap-3 sm:gap-4" role="group" aria-label="Opções de resposta"></div>
+
+        <div class="flex items-center justify-between pt-2">
+          <button id="skipBtn" class="text-sm px-4 py-2 rounded-lg border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/10 active:scale-[.99] transition">
+            Pular
+          </button>
+
+          <div class="flex items-center gap-3">
+            <button id="retryBtn" class="hidden text-sm px-4 py-2 rounded-lg border border-white/20 text-white/80 hover:text-white hover:border-white/40 hover:bg-white/10 active:scale-[.99] transition">
+              Reiniciar
+            </button>
+            <button id="nextBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold shadow-lg shadow-emerald-900/30 hover:from-emerald-400 hover:to-teal-400 active:scale-[.99] disabled:opacity-50 disabled:cursor-not-allowed transition">
+              Próxima
+            </button>
+          </div>
+        </div>
+
+        <!-- Feedback -->
+        <p id="feedback" class="min-h-[1.75rem] text-sm" aria-live="polite"></p>
+      </div>
+    </section>
+
+    <!-- Tela Final -->
+    <section id="finalScreen" class="hidden mt-6 sm:mt-8 bg-emerald-900/20 backdrop-blur-xl rounded-2xl shadow-2xl border border-emerald-300/20 p-6 sm:p-8 relative overflow-hidden">
+      <div class="absolute inset-0 pointer-events-none confetti" aria-hidden="true"></div>
+      <div class="relative">
+        <h3 class="text-2xl sm:text-3xl font-extrabold flex items-center gap-2">
+          🩺 Fim de jogo
+        </h3>
+        <p id="finalMessage" class="mt-2 text-white/80"></p>
+
+        <div class="mt-6 grid sm:grid-cols-3 gap-4">
+          <div class="bg-black/20 rounded-xl p-4 border border-white/10">
+            <p class="text-white/70 text-sm">Acertos</p>
+            <p id="finalScore" class="text-3xl font-bold mt-1">0</p>
+          </div>
+          <div class="bg-black/20 rounded-xl p-4 border border-white/10">
+            <p class="text-white/70 text-sm">Tempo</p>
+            <p id="finalTime" class="text-3xl font-bold mt-1">—</p>
+          </div>
+          <div class="bg-black/20 rounded-xl p-4 border border-white/10">
+            <p class="text-white/70 text-sm">Desempenho</p>
+            <p id="finalPerf" class="text-3xl font-bold mt-1">—</p>
+          </div>
+        </div>
+
+        <div class="mt-6 flex flex-wrap gap-3">
+          <button id="reviewBtn" class="px-5 py-2.5 rounded-xl border border-white/20 text-white/90 hover:text-white hover:border-white/40 hover:bg-white/10 active:scale-[.99] transition">
+            Ver gabarito
+          </button>
+          <button id="shareBtn" class="px-5 py-2.5 rounded-xl border border-emerald-400/30 text-emerald-100 hover:text-white hover:border-emerald-300/60 hover:bg-emerald-600/20 active:scale-[.99] transition">
+            Compartilhar
+          </button>
+          <button id="restartBtn" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-semibold shadow-lg shadow-emerald-900/30 hover:from-emerald-400 hover:to-teal-400 active:scale-[.99] transition">
+            Jogar novamente
+          </button>
+        </div>
+
+        <!-- Gabarito -->
+        <div id="reviewList" class="mt-6 hidden">
+          <h4 class="text-lg font-bold mb-3">Gabarito</h4>
+          <ol id="reviewItems" class="space-y-3 list-decimal list-inside"></ol>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    // Perguntas
+    const questions = [
+      {
+        q: "1. Em que ano foi fundada a EELM?",
+        options: ["a) 1935", "b) 1939", "c) 1942", "d) 1950"],
+        correctIndex: 1
+      },
+      {
+        q: "2. Quem fundou a EELM?",
+        options: ["a) Governo Federal", "b) Associação São Vicente de Paulo", "c) Santa Casa de Misericórdia", "d) Ministério da Saúde"],
+        correctIndex: 1
+      },
+      {
+        q: "3. Em que ano a EELM foi reconhecida oficialmente pelo MEC?",
+        options: ["a) 1939", "b) 1942", "c) 1945", "d) 1952"],
+        correctIndex: 1
+      },
+      {
+        q: "4. Onde a FELM está localizada atualmente?",
+        options: ["a) Centro do Rio", "b) Tijuca", "c) Copacabana", "d) Niterói"],
+        correctIndex: 1
+      },
+      {
+        q: "5. A EELM foi uma das primeiras escolas católicas de enfermagem do Brasil.",
+        options: ["a) Verdadeiro", "b) Falso"],
+        correctIndex: 0
+      },
+      {
+        q: "6. Qual instituição atual surgiu da antiga EELM?",
+        options: ["a) FENF/UFRJ", "b) FELM", "c) EEAN", "d) UERJ"],
+        correctIndex: 1
+      }
+    ];
+
+    // Estado
+    let current = 0;
+    let score = 0;
+    let selected = null;
+    let startTime = Date.now();
+
+    // Elementos
+    const questionText = document.getElementById('questionText');
+    const optionsContainer = document.getElementById('optionsContainer');
+    const feedback = document.getElementById('feedback');
+    const nextBtn = document.getElementById('nextBtn');
+    const retryBtn = document.getElementById('retryBtn');
+    const skipBtn = document.getElementById('skipBtn');
+    const progressBar = document.getElementById('progressBar');
+    const progressLabel = document.getElementById('progressLabel');
+    const scoreLabel = document.getElementById('scoreLabel');
+    const finalScreen = document.getElementById('finalScreen');
+    const finalMessage = document.getElementById('finalMessage');
+    const finalScore = document.getElementById('finalScore');
+    const finalTime = document.getElementById('finalTime');
+    const finalPerf = document.getElementById('finalPerf');
+    const restartBtn = document.getElementById('restartBtn');
+    const reviewBtn = document.getElementById('reviewBtn');
+    const reviewList = document.getElementById('reviewList');
+    const reviewItems = document.getElementById('reviewItems');
+    const shareBtn = document.getElementById('shareBtn');
+
+    // Utilidades
+    function formatTime(ms) {
+      const total = Math.floor(ms / 1000);
+      const m = Math.floor(total / 60);
+      const s = total % 60;
+      return `${m}m ${s.toString().padStart(2, '0')}s`;
+    }
+
+    function updateProgress() {
+      const pct = (current / questions.length) * 100;
+      progressBar.style.width = `${pct}%`;
+      progressLabel.textContent = `Pergunta ${Math.min(current + 1, questions.length)} de ${questions.length}`;
+      scoreLabel.textContent = `Pontuação: ${score}`;
+    }
+
+    function renderQuestion() {
+      selected = null;
+      nextBtn.disabled = true;
+      feedback.textContent = '';
+      feedback.className = 'min-h-[1.75rem] text-sm';
+      retryBtn.classList.add('hidden');
+
+      const q = questions[current];
+      questionText.textContent = q.q;
+      optionsContainer.innerHTML = '';
+
+      q.options.forEach((opt, idx) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className =
+          'group w-full text-left bg-emerald-900/20 hover:bg-emerald-800/20 border border-emerald-300/20 hover:border-emerald-200/30 rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition focus:outline-none focus:ring-2 focus:ring-emerald-400/50';
+        btn.setAttribute('data-index', idx);
+        btn.innerHTML = `
+          <div class="flex items-center justify-between gap-3">
+            <span class="font-medium">${opt}</span>
+            <span class="opacity-0 group-hover:opacity-100 text-xs text-white/70 transition">Selecionar</span>
+          </div>
+        `;
+        btn.addEventListener('click', () => handleSelect(idx, btn));
+        optionsContainer.appendChild(btn);
+      });
+
+      updateProgress();
+    }
+
+    function handleSelect(idx, btnEl) {
+      if (selected !== null) return;
+      selected = idx;
+
+      const q = questions[current];
+      const buttons = [...optionsContainer.querySelectorAll('button')];
+
+      buttons.forEach((b, i) => {
+        b.disabled = true;
+        b.classList.remove('hover:bg-emerald-800/20', 'hover:border-emerald-200/30');
+        if (i === q.correctIndex) {
+          b.className = 'w-full text-left rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition bg-emerald-600/20 border border-emerald-400/40';
+        }
+      });
+
+      const isCorrect = idx === q.correctIndex;
+      if (isCorrect) {
+        score++;
+        btnEl.className = 'w-full text-left rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition bg-emerald-600/30 border border-emerald-400/60';
+        feedback.textContent = '💚 Resposta certa, parabéns!!';
+        feedback.className = 'min-h-[1.75rem] text-sm text-green-200 font-medium animate-[pop_.3s_ease]';
+      } else {
+        btnEl.className = 'w-full text-left rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition bg-rose-500/20 border border-rose-400/50';
+        feedback.textContent = '🩺 Quase lá! Tente outra vez. A correta está marcada em verde.';
+        feedback.className = 'min-h-[1.75rem] text-sm text-red-200 font-medium animate-[pop_.3s_ease]';
+      }
+
+      nextBtn.disabled = false;
+      if (current === questions.length - 1) nextBtn.textContent = 'Finalizar';
+    }
+
+    function nextQuestion() {
+      if (selected === null) return;
+      if (current < questions.length - 1) {
+        current++;
+        nextBtn.textContent = 'Próxima';
+        renderQuestion();
+      } else {
+        finishQuiz();
+      }
+    }
+
+    function finishQuiz() {
+      const elapsed = Date.now() - startTime;
+      finalScore.textContent = `${score}/${questions.length}`;
+      finalTime.textContent = formatTime(elapsed);
+
+      const pct = Math.round((score / questions.length) * 100);
+      let msg = 'Boa revisão!';
+      if (pct === 100) msg = 'Excelente! 🏆 Orgulho de enfermagem!';
+      else if (pct >= 80) msg = 'Mandou muito bem! 🎉';
+      else if (pct >= 50) msg = 'Bom trabalho! 👍';
+      else msg = 'Tudo bem! Cada tentativa é um cuidado a mais. 💚';
+
+      finalMessage.textContent = `${msg}`;
+      finalPerf.textContent = `${pct}%`;
+
+      spawnConfetti();
+      finalScreen.classList.remove('hidden');
+      nextBtn.disabled = true;
+      retryBtn.classList.remove('hidden');
+      skipBtn.disabled = true;
+      buildReview();
+    }
+
+    function buildReview() {
+      reviewItems.innerHTML = '';
+      questions.forEach((q) => {
+        const li = document.createElement('li');
+        const correct = q.options[q.correctIndex];
+        li.className = 'bg-black/20 border border-white/10 rounded-lg p-3';
+        li.innerHTML = `
+          <p class="font-semibold">${q.q}</p>
+          <p class="text-white/80 mt-1">Resposta correta: <span class="text-green-300 font-medium">${correct.replace(/^[a-d]\)\\s?/, '')}</span></p>
+        `;
+        reviewItems.appendChild(li);
+      });
+    }
+
+    function resetQuiz() {
+      current = 0;
+      score = 0;
+      selected = null;
+      startTime = Date.now();
+      finalScreen.classList.add('hidden');
+      nextBtn.disabled = true;
+      nextBtn.textContent = 'Próxima';
+      retryBtn.classList.add('hidden');
+      skipBtn.disabled = false;
+      renderQuestion();
+    }
+
+    function spawnConfetti() {
+      const container = finalScreen.querySelector('.confetti');
+      container.innerHTML = '';
+      const colors = ['#34d399', '#10b981', '#6ee7b7', '#a7f3d0', '#86efac', '#bbf7d0'];
+      const count = 50;
+      for (let i = 0; i < count; i++) {
+        const piece = document.createElement('span');
+        const size = Math.floor(Math.random() * 8) + 6;
+        piece.style.left = Math.random() * 100 + '%';
+        piece.style.animationDuration = (Math.random() * 2 + 3) + 's';
+        piece.style.animationDelay = (Math.random() * 0.8) + 's';
+        piece.style.width = size + 'px';
+        piece.style.height = (size + 4) + 'px';
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.transform = `rotate(${Math.random()*360}deg)`;
+        container.appendChild(piece);
+      }
+    }
+
+    // Eventos
+    nextBtn.addEventListener('click', nextQuestion);
+    retryBtn.addEventListener('click', resetQuiz);
+    restartBtn.addEventListener('click', resetQuiz);
+    skipBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      if (selected === null) {
+        const q = questions[current];
+        const buttons = [...optionsContainer.querySelectorAll('button')];
+        buttons.forEach((b, i) => {
+          b.disabled = true;
+          b.classList.remove('hover:bg-emerald-800/20', 'hover:border-emerald-200/30');
+          if (i === q.correctIndex) {
+            b.className = 'w-full text-left rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition bg-emerald-500/20 border border-emerald-400/50';
+          } else {
+            b.className = 'w-full text-left rounded-xl px-4 py-3 sm:px-5 sm:py-4 transition bg-black/20 border border-white/10';
+          }
+        });
+        feedback.textContent = '💚 Sem pressa! A correta está marcada. Vamos para a próxima?';
+        feedback.className = 'min-h-[1.75rem] text-sm text-white/90';
+        selected = -1;
+        nextBtn.disabled = false;
+        if (current === questions.length - 1) nextBtn.textContent = 'Finalizar';
+      } else {
+        nextQuestion();
+      }
+    });
+
+    reviewBtn.addEventListener('click', () => {
+      reviewList.classList.toggle('hidden');
+      reviewBtn.textContent = reviewList.classList.contains('hidden') ? 'Ver gabarito' : 'Ocultar gabarito';
+    });
+
+    // Compartilhar (nativo no celular; cópia no desktop)
+    shareBtn.addEventListener('click', async () => {
+      const text = `Joguei o Quiz da EELM (FELM) e fiz ${finalScore.textContent}! Tente superar meu resultado 💚`;
+      const shareData = { title: 'Quiz EELM', text };
+      if (navigator.share) {
+        try { await navigator.share(shareData); }
+        catch(e) { /* usuário cancelou */ }
+      } else {
+        try {
+          await navigator.clipboard.writeText(text);
+          alert('Mensagem copiada! Cole no WhatsApp, Instagram ou e-mail.');
+        } catch {
+          alert('Copie: ' + text);
+        }
+      }
+    });
+
+    // Inicialização
+    renderQuestion();
+  </script>
+<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'983ea5fc90016d63',t:'MTc1ODY3ODgwOS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
